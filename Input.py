@@ -18,29 +18,17 @@ df = First_Worksheets.get_as_df(
 # 刪除時間戳記欄位（假設是第一欄）
 df = df.drop(df.columns[0], axis=1)
 
-""" 
-# 篩選出特定題型的資料
-def filter_qt(df, type):
-    # 篩選出與指定題型匹配的行
-    row = df[df['題型'] == type]
-    # 重置索引
-    row = row.reset_index(drop=True)
-    return row
 
+def random_pickup(df, type, num):
 
-# 測試篩選功能並輸出不同題型的結果
-print(filter_qt(df, "單選題"))
-print(filter_qt(df, "多選題"))
-print(filter_qt(df, "是非題"))
-print(filter_qt(df, "混合題"))
-"""
+    row = df[df['題型'] == type]  # 篩選出與指定題型匹配的行
+    row = row.reset_index(drop=True)  # 重置索引
 
-
-def random_pickup(df, num):
     # df.sample為隨機排列所有的行 frac=0.75 隨機選取75%重新排序（可從0~1）
-    df_shuffled = df.sample(frac=1).reset_index(drop=True)
+    df_shuffled = row.sample(frac=1).reset_index(drop=True)
     df_shuffled = df_shuffled.head(num)  # 取出前 num 行
+
     return df_shuffled
 
 
-print(random_pickup(df, 2))
+print(random_pickup(df, "單選題", 1))
