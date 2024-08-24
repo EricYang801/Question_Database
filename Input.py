@@ -1,4 +1,5 @@
 import pygsheets
+import pandas as pd
 
 # 配置 token 路徑，進行授權
 gc = pygsheets.authorize(
@@ -29,6 +30,10 @@ def random_pickup(df, type, num):
     df_shuffled = df_shuffled.head(num)  # 取出前 num 行
 
     return df_shuffled
+
+
+def unit_select(df, unit):
+    pass
 
 
 print(random_pickup(df, "單選題", 1))
