@@ -1,22 +1,43 @@
 import pygsheets
+import pandas as pd
 
-#配置token及表格路徑
-gc = pygsheets.authorize(service_file='./problem-database-433306-bad3b1ecbefb.json') 
-sheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/1Z4yYJRBJJsf9wfS6z9QJbKNjbB9jEgW-EYHyBfjHkZs/edit?usp=sharing')
-First_Worksheets = sheet[0] #第一張表
-df = First_Worksheets.get_as_df(start='A1', index_column=0, empty_value='', include_tailing_empty=False)
+# 配置 token 路徑，進行授權
+gc = pygsheets.authorize(
+    service_file='./problem-database-433306-bad3b1ecbefb.json')
 
-#刪除時間戳記
+# 打開指定的 Google 試算表
+sheet = gc.open_by_url(
+    'https://docs.google.com/spreadsheets/d/1Z4yYJRBJJsf9wfS6z9QJbKNjbB9jEgW-EYHyBfjHkZs/edit?usp=sharing')
+
+# 取得第一張工作表
+First_Worksheets = sheet[0]
+
+# 將第一張工作表的內容讀取成 DataFrame，從 A1 開始，並以第一列作為索引
+df = First_Worksheets.get_as_df(
+    start='A1', index_column=0, empty_value='', include_tailing_empty=False)
+
+# 刪除時間戳記欄位（假設是第一欄）
 df = df.drop(df.columns[0], axis=1)
 
-#篩選出題型為單選題的資料 QT = Question Type
+# 篩選出特定題型的資料
+
+
 def filter_QT(df, type):
+    # 篩選出與指定題型匹配的行
     row = df[df['題型'] == type]
-    row = row.reset_index(drop=True) #重置索引
+    # 重置索引
+    row = row.reset_index(drop=True)
     return row
 
+
+# 測試篩選功能並輸出不同題型的結果
 print(filter_QT(df, "單選題"))
 print(filter_QT(df, "多選題"))
 print(filter_QT(df, "是非題"))
 print(filter_QT(df, "混合題"))
 
+
+def random_pickup(df, num):
+    df = df.sample(n=num)
+    df_shuffled = df.sample(frac=1)  # df.sample為隨機排列所有的行 frac=1為全部行（可從0~1）
+    return df_shuffled
